@@ -131,7 +131,7 @@ To run the project, execute the following command:
 
 Contributions, issues, and feature requests are welcome!
 
-Feel free to check the [issues page](https://github.com/donmark2k/blog_app/issues).
+Feel free to check the [issues page](https://github.com/katfogy/blog-app/issues).
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -139,8 +139,7 @@ Feel free to check the [issues page](https://github.com/donmark2k/blog_app/issue
 
 ## ⭐️ Show your support <a name="support"></a>
 
-If you like this project please leave a STAR to the [Github repo](https://github.com/donmark2k/
-blog_app/)
+If you like this project please leave a STAR to the [Github repo](https://github.com/katfogy/blog-app/)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
