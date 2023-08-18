@@ -1,23 +1,15 @@
 require 'rails_helper'
 
 RSpec.describe Like, type: :model do
-  describe 'associations' do
-    it 'belongs to an author' do
-      association = described_class.reflect_on_association(:author)
-      expect(association.macro).to eq(:belongs_to)
-      expect(association.options[:class_name]).to eq('User')
-    end
-
-    it 'belongs to a post' do
-      association = described_class.reflect_on_association(:post)
-      expect(association.macro).to eq(:belongs_to)
-    end
-  end
-
-  describe 'callbacks' do
-    describe 'after_save' do
-      let(:user) { User.create(name: 'Sigh') }
-      let(:post) { Post.create(title: 'Test Post') }
+  describe '#update_likes_counter' do
+    it 'increments the post likes_counter by 1' do
+      user = User.create!(name: 'User Name', postsCounters: 0)
+      post = Post.create!(author: user, title: 'Post Title', comments_counter: 0, likes_counter: 0)
+      like = Like.new(author: user, post:)
+      expect(post.likes_counter).to eq 0
+      like.save!
+      post.reload
+      expect(post.likes_counter).to eq 1
     end
   end
 end

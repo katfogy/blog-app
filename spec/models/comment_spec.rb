@@ -1,16 +1,15 @@
 require 'rails_helper'
 
 RSpec.describe Comment, type: :model do
-  describe 'associations' do
-    it 'belongs to an author' do
-      association = described_class.reflect_on_association(:author)
-      expect(association.macro).to eq(:belongs_to)
-      expect(association.options[:class_name]).to eq('User')
-    end
-
-    it 'belongs to a post' do
-      association = described_class.reflect_on_association(:post)
-      expect(association.macro).to eq(:belongs_to)
+  describe '#update_comments_counter' do
+    it 'increments the post comments_counter by 1' do
+      user = User.create!(name: 'User Name', postsCounters: 0)
+      post = Post.create!(author: user, title: 'Post Title', comments_counter: 0, likes_counter: 0)
+      comment = Comment.new(author: user, post:, text: 'New comment')
+      expect(post.comments_counter).to eq 0
+      comment.save!
+      post.reload
+      expect(post.comments_counter).to eq 1
     end
   end
 end

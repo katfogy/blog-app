@@ -1,68 +1,32 @@
 require 'rails_helper'
 
 RSpec.describe User, type: :model do
-  describe 'validations' do
-    it 'validates presence of name' do
-      user = User.new
-      user.valid?
-      expect(user.errors.messages).to have_key(:name)
-    end
+  subject { User.new(name: 'Kay', postsCounters: 1) }
 
-    it 'validates numericality of posts_counter' do
-      user = User.new(postsCounters: 'abc')
-      user.valid?
-      expect(user.errors[:postsCounters]).to include('is not a number')
+  before { subject.save }
 
-      user.postsCounters = -1
-      user.valid?
-      expect(user.errors[:postsCounters]).to include('must be greater than or equal to 0')
-
-      user.postsCounters = 0
-      user.valid?
-      expect(user.errors[:postsCounters]).to be_empty
-    end
+  it 'name should be present' do
+    subject.name = nil
+    expect(subject).to_not be_valid
   end
 
-  describe 'associations' do
-    it 'has many posts' do
-      user = User.create(name: 'John')
-      post = Post.create(title: 'Title', text: 'Text', author: user)
-
-      expect(post).to be_a(Post)
-      expect(post.author).to eq(user)
-    end
-
-    it 'has many comments' do
-      user = User.new(name: 'John')
-      user.save
-      post = Post.new(title: 'Title', text: 'Text')
-      comment = post.comments.build(author: user)
-
-      expect(comment).to be_a(Comment)
-      expect(comment.author).to eq(user)
-    end
-
-    it 'has many likes' do
-      user = User.new(name: 'John')
-      user.save
-      post = Post.new(title: 'Title', text: 'Text')
-      like = post.likes.build(author: user)
-
-      expect(like).to be_a(Like)
-      expect(like.author).to eq(user)
-    end
+  it 'post_counter should be greater than or equal to 0' do
+    subject.postsCounters = -1
+    expect(subject).not_to be_valid
   end
 
-  describe '#three_most_recent_posts' do
-    let(:user) { create(:user) }
+  it 'post_counter should an integer' do
+    subject.postsCounters = 1.2
+    expect(subject).not_to be_valid
+  end
 
-    it 'returns the three most recent posts' do
-      user = User.create(name: 'name')
-      first_post = Post.create(title: 'first post', text: 'text', author_id: user.id)
-      Post.create(title: 'second post', text: 'text', author_id: user.id)
-      Post.create(title: 'third post', text: 'text', author_id: user.id)
-      Post.create(title: 'fourth post', text: 'text', author_id: user.id)
-      expect(user.three_most_recent_posts).to_not include(first_post)
+  it 'should return recent_posts_for_user' do
+    user = User.create!(name: 'Kay', postsCounters: 0)
+    3.times.map do
+      Post.create!(author: user, title: 'Old post', comments_counter: 0, likes_counter: 0, created_at: 1.day.ago)
     end
+    new_posts = 3.times.map { Post.create!(author: user, title: 'New post', comments_counter: 0, likes_counter: 0) }
+
+    expect(user.three_most_recent_posts).to eq new_posts.reverse
   end
 end
